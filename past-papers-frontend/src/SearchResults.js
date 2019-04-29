@@ -12,10 +12,7 @@ class SearchResults extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      results: [
-        {code: "CA4003", year: '2017', link: "google.com"},
-        {code: "CA4003", year: '2017R', link: "bing.com"},
-      ],
+      results: [],
     };
     this.generateRows = this.generateRows.bind(this);
     this.gotResults = this.gotResults.bind(this);
