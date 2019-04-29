@@ -1,0 +1,13 @@
+
+.search-paper {
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  width: 400px;
+}
+
+.search-input {
+  margin-left: 8px;
+  flex: 1;
+}
+
