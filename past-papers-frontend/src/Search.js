@@ -22,7 +22,7 @@ class Search extends React.Component {
   }
 
   search(e) {
-    alert(this.state.searchText);
+    this.props.searchCallback(this.state.searchText);
   }
 
   render() {
