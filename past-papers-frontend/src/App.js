@@ -28,6 +28,7 @@ class App extends React.Component {
           <Search searchCallback={this.updateSearch} />
           <br />
           <SearchResults search={this.state.search} />
+          <br />
         </header>
       </div>
     );
