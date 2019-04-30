@@ -22,16 +22,19 @@ class Search extends React.Component {
   }
 
   search(e) {
+    e.preventDefault();
     this.props.searchCallback(this.state.searchText);
   }
 
   render() {
     return (
       <Paper className="search-paper" elevation={1}>
-        <InputBase placeholder="Module Code" className="search-input" onChange={this.textChange} />
-        <IconButton aria-label="Search" onClick={this.search}>
-          <SearchIcon />
-        </IconButton>
+        <form className="search-paper" onSubmit={this.search}>
+          <InputBase placeholder="Module Code" className="search-input" onChange={this.textChange} />
+          <IconButton aria-label="Search" type="submit">
+            <SearchIcon />
+          </IconButton>
+        </form>
       </Paper>
     );
   }
