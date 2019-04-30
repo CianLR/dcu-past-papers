@@ -28,7 +28,9 @@ class App extends React.Component {
           <Search searchCallback={this.updateSearch} />
           <br />
           <SearchResults search={this.state.search} />
-          <br />
+          <p className="App-githubtext">
+            View this project on <a className="App-githublink" href="https://github.com/cianlr/dcu-past-papers">GitHub</a>
+          </p>
         </header>
       </div>
     );

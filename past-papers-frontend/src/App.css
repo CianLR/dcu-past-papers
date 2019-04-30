@@ -13,8 +13,12 @@
   color: white;
 }
 
-.App-link {
+.App-githublink {
   color: #61dafb;
+}
+
+.App-githubtext {
+  font-size: calc(6px + 1vmin);
 }
 
 @keyframes App-logo-spin {
