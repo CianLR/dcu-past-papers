@@ -11,7 +11,7 @@ import Paper from '@material-ui/core/Paper';
 import './SearchResults.css';
 
 const RESULTS_PER_PAGE = 10;
-const SEARCH_API = "http://localhost:5000/api/search";
+const SEARCH_API = "http://178.128.251.143:8081/api/search";
 
 class SearchResults extends React.Component {
   constructor(props) {
@@ -57,12 +57,11 @@ class SearchResults extends React.Component {
   }
 
   gotError(err) {
-    console.log(err);
     this.setState({
       results: [],
       currentPage: 0,
       totalPages: 0,
-      error: "dam",
+      error: err.response.text,
     });
   }
 

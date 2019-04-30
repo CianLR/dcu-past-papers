@@ -9,7 +9,7 @@ class App extends React.Component {
     this.state = {
       search: "",
     };
-    this.updateSearch = this.updateSearch.bind(this)
+    this.updateSearch = this.updateSearch.bind(this);
   }
 
   updateSearch(newSearch) {
