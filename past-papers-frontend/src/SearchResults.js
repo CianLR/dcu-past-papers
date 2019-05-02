@@ -11,7 +11,7 @@ import Paper from '@material-ui/core/Paper';
 import './SearchResults.css';
 
 const RESULTS_PER_PAGE = 10;
-const SEARCH_API = "http://178.128.251.143:8081/api/search";
+const SEARCH_API = "/api/search";
 
 class SearchResults extends React.Component {
   constructor(props) {
