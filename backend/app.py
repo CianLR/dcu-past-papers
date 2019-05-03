@@ -6,12 +6,9 @@ import sys
 app = Flask('DCU Past Papers Backend')
 CORS(app)
 
-if len(sys.argv) != 2:
-    print('Usage: {} <pickled_data>'.format(sys.argv[0]))
-    sys.exit(1)
-
+papers_path = "papers.pickle"
 papers = {}
-with open(sys.argv[1], 'rb') as f:
+with open(papers_path, 'rb') as f:
     papers = pickle.load(f)
 
 @app.route('/api/search', methods=['POST'])
@@ -32,6 +29,6 @@ def search():
         return "{} not in papers".format(search), 400
     return jsonify({'results': found})
 
-
-app.run(host='0.0.0.0')
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
 
