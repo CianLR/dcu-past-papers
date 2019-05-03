@@ -54,6 +54,7 @@ class SearchResults extends React.Component {
       totalPages: resp.body.results.length / RESULTS_PER_PAGE,
       error: "",
     });
+    this.props.resultsDisplayedCallback(true);
   }
 
   gotError(err) {
@@ -63,6 +64,7 @@ class SearchResults extends React.Component {
       totalPages: 0,
       error: err.response.text,
     });
+    this.props.resultsDisplayedCallback(false);
   }
 
   generateRows() {
