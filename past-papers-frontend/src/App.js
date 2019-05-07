@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactGA from 'react-ga';
 import Search from './Search';
 import SearchResults from './SearchResults';
 import './App.css';
@@ -10,11 +11,17 @@ class App extends React.Component {
       search: "",
       resultsDisplayed: false,
     };
+    ReactGA.initialize('UA-139742598-1');
+    ReactGA.pageview('/');
     this.updateSearch = this.updateSearch.bind(this);
     this.updateResultsDisplayed = this.updateResultsDisplayed.bind(this);
   }
 
   updateSearch(newSearch) {
+    ReactGA.event({
+      category: 'User',
+      action: 'Search',
+    });
     this.setState({search: newSearch});
   }
 

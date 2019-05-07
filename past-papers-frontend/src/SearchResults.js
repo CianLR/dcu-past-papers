@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactGA from 'react-ga';
 import superagent from 'superagent';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -48,6 +49,10 @@ class SearchResults extends React.Component {
       }
       return a.code.localeCompare(b.code);
     });
+    ReactGA.event({
+      'category': 'Search',
+      'action': 'SearchSuccess',
+    });
     this.setState({
       results,
       currentPage: 0,
@@ -63,6 +68,10 @@ class SearchResults extends React.Component {
       currentPage: 0,
       totalPages: 0,
       error: err.response.text,
+    });
+    ReactGA.event({
+      'category': 'Search',
+      'action': 'SearchError',
     });
     this.props.resultsDisplayedCallback(false);
   }
