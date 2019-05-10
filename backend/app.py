@@ -11,6 +11,12 @@ papers = {}
 with open(papers_path, 'rb') as f:
     papers = pickle.load(f)
 
+def paper_sort_key(paper):
+    year = float(paper["year"])
+    if paper["code"].endswith("R"):
+        year += 0.5
+    return year
+
 @app.route('/api/search', methods=['POST'])
 def search():
     search = None
@@ -27,7 +33,11 @@ def search():
             found.extend(papers[code])
     if not found:
         return "{} not in papers".format(search), 400
-    return jsonify({'results': found})
+    return jsonify({"results": sorted(
+        found,
+        key=paper_sort_key,
+        reverse=True,
+    )})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
