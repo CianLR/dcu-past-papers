@@ -31,22 +31,23 @@ class App extends React.Component {
   }
 
   renderShareLink() {
-    if (!navigator.share) {
-      return null;
+    let link = (<span>sharing it</span>);
+    if (navigator.share) {
+      let share = (e) => {
+        e.preventDefault();
+        navigator.share({
+          'title': 'DCU Past Papers',
+          'url': 'https://dcupastpapers.xyz/?utm_source=social&utm_medium=sharelink&utm_campaign=web',
+        })
+          .then(() => ReactGA.event({category: 'User', action: 'Share'}))
+          .catch((error) => console.log("Error sharing:", error));
+      };
+      link = (<a href="/" className="App-githublink" onClick={share}>sharing it</a>);
     }
-    let share = (e) => {
-      e.preventDefault();
-      navigator.share({
-        'title': 'DCU Past Papers',
-        'url': 'https://dcupastpapers.xyz/?utm_source=social&utm_medium=sharelink&utm_campaign=web',
-      })
-        .then(() => ReactGA.event({category: 'User', action: 'Share'}))
-        .catch((error) => console.log("Error sharing:", error));
-    };
     return (
       <p className="App-githubtext">
         Would your groupchat find this useful?
-        Consider <a href="/" className="App-githublink" onClick={share}>sharing it</a>.
+        Consider {link}.
       </p>
     );
   }
