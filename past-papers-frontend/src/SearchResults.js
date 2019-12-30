@@ -27,6 +27,7 @@ class SearchResults extends React.Component {
     this.gotResults = this.gotResults.bind(this);
     this.gotError = this.gotError.bind(this);
     this.changePage = this.changePage.bind(this);
+    this.updateRecentSearches = this.updateRecentSearches.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -37,7 +38,10 @@ class SearchResults extends React.Component {
       .post(SEARCH_API)
       .send({search: nextProps.search})
       .set('Accept', 'application/json')
-      .then(this.gotResults)
+      .then(resp => {
+        this.gotResults(resp);
+        this.updateRecentSearches(nextProps.search);
+      })
       .catch(this.gotError);
   }
 
@@ -68,6 +72,25 @@ class SearchResults extends React.Component {
       'action': 'SearchError',
     });
     this.props.resultsDisplayedCallback(false);
+  }
+
+  updateRecentSearches(search) {
+    let recent = JSON.parse(localStorage.getItem("recentSearches"));
+    if (!recent) {
+      recent = [];
+    }
+    if (recent.includes(search)) {
+      // Promote the search to the front.
+      recent.splice(recent.indexOf(search), 1);
+      recent.unshift(search);
+    } else {
+      // Append to the front, limiting to 3 searches.
+      recent.unshift(search);
+      if (recent.length > 3) {
+        recent.pop();
+      }
+    }
+    localStorage.setItem("recentSearches", JSON.stringify(recent));
   }
 
   generateRows() {
