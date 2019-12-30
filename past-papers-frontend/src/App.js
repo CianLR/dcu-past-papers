@@ -15,6 +15,7 @@ class App extends React.Component {
     ReactGA.pageview('/');
     this.updateSearch = this.updateSearch.bind(this);
     this.updateResultsDisplayed = this.updateResultsDisplayed.bind(this);
+    this.renderShareLink = this.renderShareLink.bind(this);
   }
 
   updateSearch(newSearch) {
@@ -29,6 +30,27 @@ class App extends React.Component {
     this.setState({ resultsDisplayed });
   }
 
+  renderShareLink() {
+    if (!navigator.share) {
+      return null;
+    }
+    let share = (e) => {
+      e.preventDefault();
+      navigator.share({
+        'title': 'DCU Past Papers',
+        'url': 'https://dcupastpapers.xyz/?utm_source=social&utm_medium=sharelink&utm_campaign=web',
+      })
+        .then(() => ReactGA.event({category: 'User', action: 'Share'}))
+        .catch((error) => console.log("Error sharing:", error));
+    };
+    return (
+      <p className="App-githubtext">
+        Would your groupchat find this useful?
+        Consider <a href="/" className="App-githublink" onClick={share}>sharing it</a>.
+      </p>
+    );
+  }
+
   render() {
     let image = null;
     if (!this.state.resultsDisplayed) {
@@ -36,6 +58,7 @@ class App extends React.Component {
         <img src="test_blue.png" className="App-logo" alt="logo" />
       );
     }
+    let shareLink = this.renderShareLink();
     return (
       <div className="App">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
@@ -51,8 +74,9 @@ class App extends React.Component {
             search={this.state.search}
             resultsDisplayedCallback={this.updateResultsDisplayed}
           />
+          {shareLink}
           <p className="App-githubtext">
-            View this project on <a className="App-githublink" href="https://github.com/cianlr/dcu-past-papers">GitHub</a>
+            View this project on <a className="App-githublink" href="https://github.com/cianlr/dcu-past-papers">GitHub</a>.
           </p>
         </header>
       </div>

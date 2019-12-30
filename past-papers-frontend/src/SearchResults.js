@@ -43,12 +43,6 @@ class SearchResults extends React.Component {
 
   gotResults(resp) {
     let results = resp.body.results;
-    results.sort((a, b) => {
-      if (b.year !== a.year) {
-        return b.year - a.year;
-      }
-      return a.code.localeCompare(b.code);
-    });
     ReactGA.event({
       'category': 'Search',
       'action': 'SearchSuccess',

@@ -20,6 +20,8 @@
 
 .App-githublink {
   color: #61dafb;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .App-githubtext {

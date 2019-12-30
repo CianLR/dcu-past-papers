@@ -25,6 +25,7 @@ def search():
     except Exception as e:
         print("Error in request:", e)
         return "Error parsing JSON", 400
+    print("Search:", search)
     if len(search) < 3:
         return "Search must be more than 3 characters", 400
     found = []
