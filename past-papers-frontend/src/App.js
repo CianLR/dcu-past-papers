@@ -52,6 +52,27 @@ class App extends React.Component {
     );
   }
 
+  renderRecentSearches() {
+    return null;
+    let recent = JSON.parse(localStorage.getItem("recentSearches"));
+    if (!recent) {
+      return null;
+    }
+    let searchLinkFunc = (s, i) => {
+      return (
+        <span key={i}>
+          <a className="App-githublink" href="/">{s}</a>{i === recent.length - 1 ? '.' : ', '}
+        </span>
+      );
+    }
+    return (
+      <p>
+        Recent searches:&nbsp;
+        {recent.map(searchLinkFunc)}
+      </p>
+    );
+  }
+
   render() {
     let image = null;
     if (!this.state.resultsDisplayed) {
@@ -59,6 +80,7 @@ class App extends React.Component {
         <img src="test_blue.png" className="App-logo" alt="logo" />
       );
     }
+    let recentSearches = this.renderRecentSearches();
     let shareLink = this.renderShareLink();
     return (
       <div className="App">
@@ -71,6 +93,7 @@ class App extends React.Component {
           </p>
           <Search searchCallback={this.updateSearch} />
           <br />
+          {recentSearches}
           <SearchResults
             search={this.state.search}
             resultsDisplayedCallback={this.updateResultsDisplayed}
