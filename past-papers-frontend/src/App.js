@@ -1,4 +1,5 @@
 import React from 'react';
+import {BrowserRouter, Switch, Link, Route} from 'react-router-dom';
 import ReactGA from 'react-ga';
 import Search from './Search';
 import SearchResults from './SearchResults';
@@ -7,27 +8,15 @@ import './App.css';
 class App extends React.Component {
   constructor(props) {
     super(props);
+    let recent = JSON.parse(localStorage.getItem("recentSearches"));
     this.state = {
-      search: "",
-      resultsDisplayed: false,
+      recentSearches: recent ? recent : [],
     };
     ReactGA.initialize('UA-139742598-1');
     ReactGA.pageview('/');
-    this.updateSearch = this.updateSearch.bind(this);
-    this.updateResultsDisplayed = this.updateResultsDisplayed.bind(this);
     this.renderShareLink = this.renderShareLink.bind(this);
-  }
-
-  updateSearch(newSearch) {
-    ReactGA.event({
-      category: 'User',
-      action: 'Search',
-    });
-    this.setState({search: newSearch});
-  }
-
-  updateResultsDisplayed(resultsDisplayed) {
-    this.setState({ resultsDisplayed });
+    this.addNewSearch = this.addNewSearch.bind(this);
+    this.renderRecentSearches = this.renderRecentSearches.bind(this);
   }
 
   renderShareLink() {
@@ -52,58 +41,82 @@ class App extends React.Component {
     );
   }
 
-  renderRecentSearches() {
-    return null;
-    let recent = JSON.parse(localStorage.getItem("recentSearches"));
+  addNewSearch(search) {
+    let recent = this.state.recentSearches;
     if (!recent) {
-      return null;
+      recent = [];
     }
+    if (recent.includes(search)) {
+      // Promote the search to the front.
+      recent.splice(recent.indexOf(search), 1);
+      recent.unshift(search);
+    } else {
+      // Append to the front, limiting to 3 searches.
+      recent.unshift(search);
+      if (recent.length > 3) {
+        recent.pop();
+      }
+    }
+    localStorage.setItem("recentSearches", JSON.stringify(recent));
+    this.setState({recentSearches: recent});
+  }
+
+  renderRecentSearches() {
     let searchLinkFunc = (s, i) => {
       return (
         <span key={i}>
-          <a className="App-githublink" href="/">{s}</a>{i === recent.length - 1 ? '.' : ', '}
+          <Link
+            className="App-githublink"
+            to={`/search/${s}`}
+            onClick={e => ReactGA.event({category: 'User', action: 'RecentSearchClick'})}
+          >
+            {s}
+          </Link>
+        {i === this.state.recentSearches.length - 1 ? '.' : ', '}
         </span>
       );
     }
     return (
       <p>
         Recent searches:&nbsp;
-        {recent.map(searchLinkFunc)}
+        {this.state.recentSearches.map(searchLinkFunc)}
       </p>
     );
   }
 
   render() {
-    let image = null;
-    if (!this.state.resultsDisplayed) {
-      image = (
-        <img src="test_blue.png" className="App-logo" alt="logo" />
-      );
-    }
+    let image = (
+      <img src="/test_blue.png" className="App-logo" alt="logo" />
+    );
     let recentSearches = this.renderRecentSearches();
     let shareLink = this.renderShareLink();
     return (
-      <div className="App">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-        <header className="App-header">
-          {image}
-          <p>
-            Search for DCU past papers
-          </p>
-          <Search searchCallback={this.updateSearch} />
-          <br />
-          {recentSearches}
-          <SearchResults
-            search={this.state.search}
-            resultsDisplayedCallback={this.updateResultsDisplayed}
-          />
-          {shareLink}
-          <p className="App-githubtext">
-            View this project on <a className="App-githublink" href="https://github.com/cianlr/dcu-past-papers">GitHub</a>.
-          </p>
-        </header>
-      </div>
+      <BrowserRouter>
+        <div className="App">
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
+          <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+          <header className="App-header">
+            {image}
+            <p>
+              Search for DCU past papers
+            </p>
+            <Search/>
+            <br />
+            {recentSearches}
+            <Switch>
+              <Route
+                path="/search/:search"
+                render={props => <SearchResults {...props} addRecentCallback={this.addNewSearch} />}
+              />
+              <Route path="/" />
+            </Switch>
+            {shareLink}
+            <p className="App-githubtext">
+              View this project on <a className="App-githublink" href="https://github.com/cianlr/dcu-past-papers">GitHub</a>.
+            </p>
+          </header>
+        </div>
+      </BrowserRouter>
     );
   }
 }

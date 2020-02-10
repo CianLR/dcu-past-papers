@@ -1,4 +1,5 @@
 import React from 'react';
+import {withRouter} from 'react-router-dom';
 import ReactGA from 'react-ga';
 import superagent from 'superagent';
 import Table from '@material-ui/core/Table';
@@ -27,22 +28,34 @@ class SearchResults extends React.Component {
     this.gotResults = this.gotResults.bind(this);
     this.gotError = this.gotError.bind(this);
     this.changePage = this.changePage.bind(this);
-    this.updateRecentSearches = this.updateRecentSearches.bind(this);
+    this.makeSearchRequest = this.makeSearchRequest.bind(this);
+
+    let {search} = props.match.params;
+    if (search) {
+      this.makeSearchRequest(search)
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.search === "" || this.props.search === nextProps.search) {
+    let currSearch = this.props.match.params.search
+    let nextSearch = nextProps.match.params.search
+    if (nextSearch === "" || nextSearch === currSearch) {
       return;
     }
+    this.makeSearchRequest(nextSearch);
+  }
+
+  makeSearchRequest(search) {
     superagent
       .post(SEARCH_API)
-      .send({search: nextProps.search})
+      .send({search})
       .set('Accept', 'application/json')
       .then(resp => {
         this.gotResults(resp);
-        this.updateRecentSearches(nextProps.search);
+        this.props.addRecentCallback(search);
       })
       .catch(this.gotError);
+    ReactGA.pageview(`/search/${search}`);
   }
 
   gotResults(resp) {
@@ -57,7 +70,6 @@ class SearchResults extends React.Component {
       totalPages: resp.body.results.length / RESULTS_PER_PAGE,
       error: "",
     });
-    this.props.resultsDisplayedCallback(true);
   }
 
   gotError(err) {
@@ -71,26 +83,6 @@ class SearchResults extends React.Component {
       'category': 'Search',
       'action': 'SearchError',
     });
-    this.props.resultsDisplayedCallback(false);
-  }
-
-  updateRecentSearches(search) {
-    let recent = JSON.parse(localStorage.getItem("recentSearches"));
-    if (!recent) {
-      recent = [];
-    }
-    if (recent.includes(search)) {
-      // Promote the search to the front.
-      recent.splice(recent.indexOf(search), 1);
-      recent.unshift(search);
-    } else {
-      // Append to the front, limiting to 3 searches.
-      recent.unshift(search);
-      if (recent.length > 3) {
-        recent.pop();
-      }
-    }
-    localStorage.setItem("recentSearches", JSON.stringify(recent));
   }
 
   generateRows() {
@@ -164,4 +156,4 @@ class SearchResults extends React.Component {
   }
 }
 
-export default SearchResults;
+export default withRouter(SearchResults);

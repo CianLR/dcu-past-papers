@@ -1,4 +1,5 @@
 import React from 'react';
+import {withRouter} from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
@@ -23,7 +24,9 @@ class Search extends React.Component {
 
   search(e) {
     e.preventDefault();
-    this.props.searchCallback(this.state.searchText);
+    if (this.state.searchText) {
+      this.props.history.push("/search/" + this.state.searchText);
+    }
   }
 
   render() {
@@ -40,4 +43,4 @@ class Search extends React.Component {
   }
 }
 
-export default Search;
+export default withRouter(Search);
