@@ -5,6 +5,9 @@ import Search from './Search';
 import SearchResults from './SearchResults';
 import './App.css';
 
+// Enable the social sharing text.
+const SHARE_LINK = false;
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -20,6 +23,9 @@ class App extends React.Component {
   }
 
   renderShareLink() {
+    if (!SHARE_LINK) {
+      return null;
+    }
     let link = (<span>sharing it</span>);
     if (navigator.share) {
       let share = (e) => {
@@ -62,6 +68,9 @@ class App extends React.Component {
   }
 
   renderRecentSearches() {
+    if (this.state.recentSearches.length === 0) {
+      return null;
+    }
     let searchLinkFunc = (s, i) => {
       return (
         <span key={i}>
@@ -96,7 +105,13 @@ class App extends React.Component {
           <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
           <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
           <header className="App-header">
-            {image}
+            <Switch>
+              <Route path="/search/:search" />
+              <Route
+                path="/"
+                render={() => image}
+              />
+            </Switch>
             <p>
               Search for DCU past papers
             </p>
